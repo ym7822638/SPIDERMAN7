@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تسجيل الدخول</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPyKLU0BNOio5Mzk_ZFvnieL308Cj979u6qwOJjopN4T9ZQRLkdOdctay_HOIJS8ZgaLmGCgohe1QEL63_rsKCaHqeYGToXbl0YBFq3jCSWZY6SJWrYmkPG9bQWNc2MCcQUfzHzwZwpzkNIAN3TN6VTXh9fa1W5oXqjy8YSi-na_fSpBf6_6Mxiz47nzUc/s888/3502204955c989f269c042738539214d.gif') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        .login-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            z-index: 1;
+            text-align: center;
+            position: relative;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* توزيع المسافات بين العناصر */
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+        .input-container {
+            position: relative;
+            margin: 10px auto;
+        }
+        .input-container i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+        }
+        .login-container input {
+            width: calc(100% - 22px);
+            padding: 10px 10px 10px 30px;
+            margin: 10px auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+        .login-container input::placeholder {
+            color: #fff;
+            text-align: center;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #fff;
+            border: none;
+            color: #000;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            position: relative;
+            align-self: flex-end; /* محاذاة الزر لأسفل الخانات */
+        }
+        .login-container button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 50%; /* جعل الخلفية نصف الارتفاع */
+            background-color: #007bff;
+            transform: translateY(-50%);
+            z-index: -1;
+        }
+        .login-container button i {
+            margin-right: 10px;
+        }
+        .login-container button:hover {
+            background-color: #f0f0f0;
+        }
+        .spinner {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 2;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .date-container {
+            color: #fff;
+            font-size: 18px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .link-box {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 80px;
+            line-height: 80px;
+            border: 2px solid #fff;
+            color: #fff;
+            background-color: transparent;
+            border-radius: 16px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        .link-box:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="date-container" id="current-date"></div>
+        <h2></h2>
+        <form id="loginForm">
+            <div class="input-container">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="iD Account " required>
+            </div>
+            <div class="input-container">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit"><i class="fas fa-sign-in-alt"></i>Login</button>
+        </form>
+    </div>
+    <div class="spinner" id="spinner"></div>
+    <div class="link-box" id="telegramLink">@SPIDERMAN2714</div>
+
+    <script>
+        // عرض التاريخ الحالي بتنسيق YYYY/MM/DD
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${year}/${month}/${day}`;
+        document.getElementById('current-date').textContent = formattedDate;
+
+        // معالجة نموذج تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var redirectURL = 'https://user1721982099921.requestly.tech/MESSI.html';
+            
+            var usernamePattern = /^\d{9}$/;
+            if (!usernamePattern.test(username)) {
+                alert('ERROR');
+                return;
+            }
+
+            var correctPassword = '123456';
+            if (password === correctPassword) {
+                document.getElementById('spinner').style.display = 'block';
+
+                setTimeout(function() {
+                    window.location.href = redirectURL;
+                }, 5000);
+            } else {
+                alert('كلمة المرور غير صحيحة.');
+            }
+        });
+
+        // التعامل مع رابط تيليجرام
+        document.getElementById('telegramLink').addEventListener('click', function() {
+            window.location.href = 'https://t.me/SPIDERMAN2714';
+        });
+    </script>
+</body>
+</html>
